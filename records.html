@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Records - MediCare</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <h2>🏥 MediCare</h2>
+      <nav>
+        <a href="dashboard.html">📊 Dashboard</a>
+        <a href="patients.html">👤 Patients</a>
+        <a href="appointments.html">📅 Appointments</a>
+        <a href="staff.html">👨‍⚕️ Staff</a>
+        <a href="records.html" class="active">📁 Records</a>
+        <a href="beds.html">🛏️ Beds</a>
+      </nav>
+      <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <h1>Medical Records</h1>
+        <button id="addBtn" class="primary-btn">+ New Record</button>
+      </header>
+
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Diagnosis</th>
+              <th>Prescription</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h2 id="modalTitle">New Record</h2>
+      <form id="dataForm">
+        <input type="hidden" id="recordId">
+        <input type="text" id="fPatient" placeholder="Patient Name" required>
+        <input type="text" id="fDiagnosis" placeholder="Diagnosis" required>
+        <input type="text" id="fPrescription" placeholder="Prescription">
+        <textarea id="fNotes" placeholder="Notes" rows="3"></textarea>
+        <input type="date" id="fDate" required>
+        <div class="modal-actions">
+          <button type="button" class="secondary-btn" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="primary-btn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="auth.js"></script>
+  <script type="module" src="records.js"></script>
+</body>
+</html>
