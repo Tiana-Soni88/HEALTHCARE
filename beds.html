@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bed Management · MediCare ERP</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <style>
+    /* ============================================================
+       STYLE BLOCK 1 of 2 — MASTER (identical on every page)
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --grad-brand: linear-gradient(135deg, #0ea5e9 0%, #0f172a 100%);
+      --grad-sidebar: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+      --grad-btn: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+      --grad-btn-hover: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      --grad-danger: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+      --grad-success: linear-gradient(135deg, #10b981 0%, #047857 100%);
+      --c-bg: #f1f5f9;
+      --c-surface: #ffffff;
+      --c-border: #e2e8f0;
+      --c-border-strong: #cbd5e1;
+      --c-text: #0f172a;
+      --c-text-muted: #64748b;
+      --c-text-soft: #94a3b8;
+      --c-primary: #0284c7;
+      --c-primary-dark: #0f172a;
+      --c-accent: #0ea5e9;
+      --c-danger: #ef4444;
+      --c-success: #10b981;
+      --c-warning: #f59e0b;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+      --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
+      --radius-sm: 6px;
+      --radius: 10px;
+      --radius-lg: 14px;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: "SF Mono", Monaco, Consolas, "Courier New", monospace;
+    }
+
+    html, body {
+      font-family: var(--font);
+      color: var(--c-text);
+      background: var(--c-bg);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }
+    button { cursor: pointer; border: none; background: none; }
+    a { color: inherit; text-decoration: none; }
+    svg { display: block; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 600;
+      transition: transform 0.1s, box-shadow 0.15s, background 0.15s;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .btn-primary { background: var(--grad-btn); color: white; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); }
+    .btn-primary:hover:not(:disabled) { background: var(--grad-btn-hover); box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35); }
+    .btn-secondary { background: white; color: var(--c-primary-dark); border: 1.5px solid var(--c-border-strong); }
+    .btn-secondary:hover { background: #f8fafc; border-color: var(--c-primary); }
+    .btn-danger { background: var(--grad-danger); color: white; }
+    .btn-danger:hover { filter: brightness(0.95); }
+    .btn-success { background: var(--grad-success); color: white; }
+    .btn-sm { padding: 7px 12px; font-size: 13px; }
+    .btn svg { width: 16px; height: 16px; }
+
+    /* ============================================================
+       STYLE BLOCK 2 of 2 — APP SHELL + BED MANAGEMENT
+       ============================================================ */
+    .app { display: flex; min-height: 100vh; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px;
+      background: var(--grad-sidebar);
+      color: #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      flex-shrink: 0;
+      border-right: 1px solid rgba(255,255,255,0.04);
+      z-index: 50;
+    }
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 22px 22px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .sidebar-brand svg { width: 34px; height: 34px; flex-shrink: 0; }
+    .sidebar-brand .name { font-weight: 700; font-size: 16px; letter-spacing: -0.01em; color: white; }
+    .sidebar-brand .sub { font-size: 10.5px; color: #94a3b8; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; font-weight: 600; }
+
+    .sidebar-nav { flex: 1; padding: 14px 12px; overflow-y: auto; }
+    .sidebar-nav::-webkit-scrollbar { width: 6px; }
+    .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+    .nav-section-title {
+      font-size: 10.5px; color: #64748b; text-transform: uppercase;
+      letter-spacing: 0.12em; padding: 14px 12px 6px; font-weight: 700;
+    }
+    .sidebar-nav a {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 14px; border-radius: var(--radius-sm);
+      color: #cbd5e1; font-size: 13.5px; font-weight: 500;
+      transition: background 0.15s, color 0.15s; margin-bottom: 2px;
+    }
+    .sidebar-nav a svg { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.7; }
+    .sidebar-nav a:hover { background: rgba(255,255,255,0.05); color: white; }
+    .sidebar-nav a:hover svg { opacity: 1; }
+    .sidebar-nav a.active {
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(2, 132, 199, 0.08) 100%);
+      color: white;
+      box-shadow: inset 3px 0 0 var(--c-accent);
+    }
+    .sidebar-nav a.active svg { opacity: 1; color: var(--c-accent); }
+
+    .sidebar-foot { padding: 16px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .user-pill {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; background: rgba(255,255,255,0.04);
+      border-radius: var(--radius-sm); margin-bottom: 10px;
+    }
+    .user-pill .avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--grad-btn); display: grid; place-items: center;
+      font-weight: 700; font-size: 13px; color: white; flex-shrink: 0;
+    }
+    .user-pill .info { overflow: hidden; min-width: 0; }
+    .user-pill .info .label { font-size: 10.5px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+    .user-pill .info .email {
+      font-size: 12px; color: #e2e8f0; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis; margin-top: 1px;
+    }
+    .logout-btn {
+      width: 100%; padding: 10px; background: transparent;
+      border: 1px solid rgba(239, 68, 68, 0.35); color: #fecaca;
+      border-radius: var(--radius-sm); font-size: 13px; font-weight: 600;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .logout-btn:hover { background: rgba(239, 68, 68, 0.12); border-color: var(--c-danger); color: white; }
+    .logout-btn svg { width: 15px; height: 15px; }
+
+    /* MAIN */
+    .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .topbar {
+      background: white; padding: 18px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; border-bottom: 1px solid var(--c-border);
+      position: sticky; top: 0; z-index: 40;
+    }
+    .topbar h1 { font-size: 22px; font-weight: 700; color: var(--c-primary-dark); letter-spacing: -0.02em; }
+    .topbar .subtitle { font-size: 13px; color: var(--c-text-muted); margin-top: 2px; }
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .live-clock {
+      font-size: 13px; color: var(--c-text-muted); font-variant-numeric: tabular-nums;
+      padding: 7px 13px; background: #f8fafc; border: 1px solid var(--c-border);
+      border-radius: 20px; font-weight: 500;
+    }
+    .content { padding: 28px 32px 40px; }
+
+    /* SUMMARY STRIP */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 26px;
+    }
+    .summary-card {
+      background: white; border-radius: var(--radius);
+      padding: 18px 22px; box-shadow: var(--shadow-sm);
+      border: 1px solid var(--c-border);
+      position: relative; overflow: hidden;
+    }
+    .summary-card::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0;
+      height: 3px; background: var(--grad-btn);
+    }
+    .summary-card.red::before { background: var(--grad-danger); }
+    .summary-card.green::before { background: var(--grad-success); }
+    .summary-card .label {
+      font-size: 11.5px; color: var(--c-text-muted);
+      text-transform: uppercase; letter-spacing: 0.07em;
+      font-weight: 700; margin-bottom: 8px;
+    }
+    .summary-card .value {
+      font-size: 30px; font-weight: 700; color: var(--c-primary-dark);
+      letter-spacing: -0.02em; font-variant-numeric: tabular-nums;
+    }
+    .summary-card.red .value { color: var(--c-danger); }
+    .summary-card.green .value { color: var(--c-success); }
+
+    /* TABS */
+    .tabs {
+      display: flex; gap: 4px; margin-bottom: 20px;
+      border-bottom: 1.5px solid var(--c-border);
+    }
+    .tab-btn {
+      background: none; border: none;
+      padding: 12px 20px; font-size: 14px; font-weight: 600;
+      color: var(--c-text-muted); cursor: pointer;
+      border-bottom: 2.5px solid transparent;
+      margin-bottom: -1.5px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .tab-btn:hover { color: var(--c-primary-dark); }
+    .tab-btn.active { color: var(--c-primary); border-bottom-color: var(--c-accent); }
+
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    /* WARD CARDS */
+    .ward-group-title {
+      font-size: 12px; font-weight: 700; color: var(--c-text-muted);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin: 22px 0 12px;
+    }
+    .ward-card {
+      background: white; border-radius: var(--radius);
+      padding: 22px; box-shadow: var(--shadow-sm);
+      border: 1px solid var(--c-border);
+      margin-bottom: 18px;
+    }
+    .ward-header {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 16px;
+      margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .ward-header h3 {
+      font-size: 16px; font-weight: 700; color: var(--c-primary-dark);
+      letter-spacing: -0.01em; margin-bottom: 6px;
+    }
+    .ward-stats {
+      display: flex; gap: 20px; font-size: 13px;
+      color: var(--c-text-muted); flex-wrap: wrap;
+    }
+    .ward-stats strong { color: var(--c-primary-dark); font-weight: 700; }
+    .text-red { color: var(--c-danger) !important; }
+    .text-green { color: var(--c-success) !important; }
+
+    /* BED TILES */
+    .bed-tiles {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+    }
+    .bed-tile {
+      background: #f0fdf4;
+      border: 1.5px solid #86efac;
+      border-radius: var(--radius-sm);
+      padding: 12px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.12s, box-shadow 0.15s, border-color 0.15s;
+      user-select: none;
+    }
+    .bed-tile:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.15);
+    }
+    .bed-tile.occupied {
+      background: #fef2f2;
+      border-color: #fca5a5;
+    }
+    .bed-tile.occupied:hover {
+      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.18);
+    }
+    .bed-tile .bed-id {
+      font-size: 10.5px; font-weight: 700; color: var(--c-text-muted);
+      letter-spacing: 0.06em; margin-bottom: 5px;
+      font-family: var(--font-mono);
+    }
+    .bed-tile .bed-patient {
+      font-size: 12.5px; color: var(--c-primary-dark);
+      font-weight: 600; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap;
+    }
+    .bed-tile .bed-status {
+      font-size: 10px; text-transform: uppercase;
+      letter-spacing: 0.06em; margin-top: 5px;
+      font-weight: 700;
+    }
+    .bed-tile:not(.occupied) .bed-status { color: var(--c-success); }
+    .bed-tile.occupied .bed-status { color: var(--c-danger); }
+
+    /* TABLE (for history tab) */
+    .table-wrap {
+      background: white; border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--c-border);
+      overflow: hidden;
+    }
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th, .data-table td {
+      padding: 13px 20px; text-align: left;
+      font-size: 14px; border-bottom: 1px solid var(--c-border);
+    }
+    .data-table th {
+      background: #f8fafc; font-weight: 600;
+      font-size: 11.5px; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--c-text-muted);
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tbody tr { transition: background 0.1s; }
+    .data-table tbody tr:hover { background: #f8fafc; }
+
+    .pill {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .pill.admit { background: #fee2e2; color: #991b1b; }
+    .pill.discharge { background: #dcfce7; color: #166534; }
+
+    .empty-state {
+      text-align: center; padding: 40px 20px !important;
+      color: var(--c-text-soft); font-size: 14px;
+    }
+
+    /* MODAL */
+    .modal {
+      display: none; position: fixed; inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(3px);
+      align-items: center; justify-content: center;
+      z-index: 100; padding: 20px;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: white; border-radius: var(--radius-lg);
+      padding: 28px 30px; width: 100%; max-width: 460px;
+      box-shadow: var(--shadow-lg);
+      animation: rise 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      max-height: 90vh; overflow-y: auto;
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(16px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-content h2 {
+      font-size: 20px; font-weight: 700; color: var(--c-primary-dark);
+      margin-bottom: 20px; letter-spacing: -0.01em;
+    }
+    .modal-content label {
+      display: block; margin-bottom: 6px;
+      font-size: 13px; font-weight: 500; color: var(--c-text);
+    }
+    .modal-content input,
+    .modal-content select,
+    .modal-content textarea {
+      width: 100%; padding: 11px 14px; margin-bottom: 14px;
+      border: 1.5px solid var(--c-border);
+      border-radius: var(--radius); font-size: 14px;
+      outline: none; background: #f8fafc;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+      font-family: inherit; resize: vertical;
+    }
+    .modal-content input:focus,
+    .modal-content select:focus,
+    .modal-content textarea:focus {
+      border-color: var(--c-accent); background: white;
+      box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.12);
+    }
+    .modal-content input:disabled {
+      background: #f1f5f9; color: var(--c-text-muted); cursor: not-allowed;
+    }
+    .modal-actions {
+      display: flex; gap: 10px;
+      justify-content: flex-end; margin-top: 8px;
+    }
+
+    /* TOAST */
+    .toast-container {
+      position: fixed; bottom: 24px; right: 24px;
+      display: flex; flex-direction: column; gap: 10px; z-index: 9999;
+    }
+    .toast {
+      background: white; color: var(--c-primary-dark);
+      padding: 14px 20px; border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      border-left: 4px solid var(--c-primary);
+      font-size: 14px; font-weight: 500;
+      opacity: 0; transform: translateX(20px);
+      transition: opacity 0.25s, transform 0.25s;
+      min-width: 240px; max-width: 340px;
+    }
+    .toast.show { opacity: 1; transform: translateX(0); }
+    .toast-success { border-left-color: var(--c-success); }
+    .toast-error { border-left-color: var(--c-danger); }
+    .toast-info { border-left-color: var(--c-primary); }
+
+    /* MOBILE */
+    .menu-toggle { display: none; }
+    @media (max-width: 900px) {
+      .sidebar {
+        position: fixed; left: 0; top: 0;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        z-index: 100;
+        box-shadow: 20px 0 60px rgba(0,0,0,0.3);
+      }
+      .sidebar.open { transform: translateX(0); }
+      .menu-toggle {
+        display: inline-grid; place-items: center;
+        width: 40px; height: 40px;
+        border: 1.5px solid var(--c-border);
+        border-radius: var(--radius-sm);
+        background: white; margin-right: 12px;
+      }
+      .menu-toggle svg { width: 20px; height: 20px; }
+      .topbar { padding: 14px 18px; }
+      .topbar h1 { font-size: 18px; }
+      .content { padding: 18px 16px 40px; }
+      .live-clock { display: none; }
+      .data-table th, .data-table td { padding: 10px 12px; font-size: 13px; }
+      .ward-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body class="app" data-page="beds">
+  <!-- ==================== SIDEBAR ==================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <svg viewBox="0 0 64 64">
+        <defs>
+          <linearGradient id="sb" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0ea5e9"/>
+            <stop offset="100%" stop-color="#0f172a"/>
+          </linearGradient>
+        </defs>
+        <rect width="64" height="64" rx="14" fill="url(#sb)"/>
+        <path d="M27 12h10v12h12v10H37v18H27V34H15V24h12z" fill="#ffffff"/>
+      </svg>
+      <div>
+        <div class="name">MediCare</div>
+        <div class="sub">Hospital ERP</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Overview</div>
+      <a href="dashboard.html" data-nav="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        Dashboard
+      </a>
+
+      <div class="nav-section-title">Clinical</div>
+      <a href="patients.html" data-nav="patients">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>
+        Patients
+      </a>
+      <a href="appointments.html" data-nav="appointments">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Appointments
+      </a>
+      <a href="records.html" data-nav="records">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+        Records
+      </a>
+      <a href="beds.html" data-nav="beds" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9"/></svg>
+        Bed Management
+      </a>
+
+      <div class="nav-section-title">Administration</div>
+      <a href="staff.html" data-nav="staff">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Staff Directory
+      </a>
+            <div class="nav-section-title">Finance &amp; Services</div>
+      <a href="billing.html" data-nav="billing">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Billing
+      </a>
+      <a href="pharmacy.html" data-nav="pharmacy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 20.5 3.5 13.5a5 5 0 0 1 7-7l7 7a5 5 0 0 1-7 7z"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/></svg>
+        Pharmacy
+      </a>
+      <a href="lab.html" data-nav="lab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v4l4 10a2 2 0 0 1-2 3H7a2 2 0 0 1-2-3l4-10V3z"/><line x1="6" y1="14" x2="18" y2="14"/></svg>
+        Lab Tests
+      </a>
+
+      <div class="nav-section-title">System</div>
+      <a href="audit.html" data-nav="audit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Audit Log
+      </a>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="user-pill">
+        <div class="avatar" id="userAvatar">U</div>
+        <div class="info">
+          <div class="label">Signed in</div>
+          <div class="email" id="userEmail">—</div>
+        </div>
+      </div>
+      <button class="logout-btn" data-action="logout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- ==================== MAIN ==================== -->
+  <main class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;min-width:0;">
+        <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div>
+          <h1>Bed Management</h1>
+          <div class="subtitle">Ward occupancy and admission control</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span class="live-clock" id="liveClock"></span>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- SUMMARY -->
+      <section class="summary-grid">
+        <div class="summary-card">
+          <div class="label">Total Beds</div>
+          <div class="value" id="sumTotal">0</div>
+        </div>
+        <div class="summary-card red">
+          <div class="label">Occupied</div>
+          <div class="value" id="sumOccupied">0</div>
+        </div>
+        <div class="summary-card green">
+          <div class="label">Available</div>
+          <div class="value" id="sumAvailable">0</div>
+        </div>
+        <div class="summary-card">
+          <div class="label">Occupancy Rate</div>
+          <div class="value" id="sumRate">0%</div>
+        </div>
+      </section>
+
+      <!-- TABS -->
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="wards">Wards</button>
+        <button class="tab-btn" data-tab="history">Activity Log</button>
+      </div>
+
+      <!-- WARDS TAB -->
+      <div class="tab-pane active" data-tab="wards">
+        <div class="ward-group-title">General Wards</div>
+        <div id="generalWards"></div>
+
+        <div class="ward-group-title">Intensive Care Unit</div>
+        <div id="icuWards"></div>
+      </div>
+
+      <!-- HISTORY TAB -->
+      <div class="tab-pane" data-tab="history">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Action</th>
+                <th>Ward</th>
+                <th>Bed</th>
+                <th>Patient</th>
+                <th>Staff</th>
+              </tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==================== ADMIT / DISCHARGE / EDIT / TRANSFER MODAL ==================== -->
+<div id="bedModal" class="modal">
+  <div class="modal-content">
+    <h2 id="bedModalTitle">Admit Patient</h2>
+    <form id="bedForm">
+      <input type="hidden" id="mWardKey">
+      <input type="hidden" id="mBedId">
+      <input type="hidden" id="mAction">
+
+      <label>Bed ID</label>
+      <input type="text" id="mBedIdDisplay" disabled>
+
+      <div id="patientFields">
+        <label for="mPatientName">Patient Name</label>
+        <input type="text" id="mPatientName" placeholder="Full name" required>
+
+        <label for="mPatientAge">Age</label>
+        <input type="number" id="mPatientAge" placeholder="Age" min="0" max="130">
+
+        <label for="mPatientDiagnosis">Diagnosis</label>
+        <input type="text" id="mPatientDiagnosis" placeholder="Optional">
+      </div>
+
+      <div id="dischargeMessage" style="display:none; background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:16px; margin-bottom:14px; color:#991b1b;">
+        <strong id="dischargePatientName">—</strong>
+        <div style="font-size:13px; margin-top:6px; color:#7f1d1d;" id="dischargeMeta"></div>
+      </div>
+
+      <div id="bedActionBar" style="display:none; gap:8px; margin-bottom:14px;"></div>
+
+      <div id="transferInfo" style="display:none;">
+        <label for="mDestWard">Destination Ward</label>
+        <select id="mDestWard"><option value="">Select ward</option></select>
+        <label for="mDestBed">Destination Bed</label>
+        <select id="mDestBed"><option value="">Select ward first</option></select>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" data-action="closeModal">Cancel</button>
+        <button type="submit" id="bedSubmitBtn" class="btn btn-primary">Confirm</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+  <!-- ==================== CAPACITY MODAL ==================== -->
+  <div id="capacityModal" class="modal">
+    <div class="modal-content">
+      <h2>Edit Ward Capacity</h2>
+      <form id="capacityForm">
+        <input type="hidden" id="cWardKey">
+
+        <label for="cLabel">Ward Name</label>
+        <input type="text" id="cLabel" disabled>
+
+        <label for="cCapacity">Total Beds</label>
+        <input type="number" id="cCapacity" min="1" max="500" required>
+
+        <p style="font-size:13px; color:var(--c-text-muted); margin-bottom:16px; line-height:1.5;">
+          Reducing below currently occupied beds is not permitted. Discharge patients first.
+        </p>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" data-action="closeModal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="core.js"></script>
+</body>
+</html>
